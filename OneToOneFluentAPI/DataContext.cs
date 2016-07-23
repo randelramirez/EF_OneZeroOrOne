@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneZeroOrOneFluentAPINonConvention
+namespace OneToOneFluentAPI
 {
     public class DataContext : DbContext
     {
@@ -20,13 +20,16 @@ namespace OneZeroOrOneFluentAPINonConvention
 
             // Configure Person & DriverLicense entity
             modelBuilder.Entity<Person>()
-                .HasOptional(person => person.DriverLicense) // Mark DriverLicense optional in Person entity
-                .WithRequired(license => license.Person); // mark Person property as required in DriverLicense entity. Cannot save DriverLicense without Person
+                .HasRequired(person => person.DriverLicense) // Mark DriverLicense required in Person entity
+                .WithRequiredPrincipal(license => license.Person); // mark Person property as required in DriverLicense entity. Cannot save DriverLicense without Person and vice-versa
 
+            //// DevTest: tried using both at the same time for 1-1, it did not throw exception still
             //// another way
             //modelBuilder.Entity<DriverLicense>()
-            //    .HasRequired(license => license.Person) // Mark Person as required in DriverLicense entity
-            //    .WithOptional(person => person.DriverLicense); // mark DriverLicense as optional in Person entity. Can save Person without DriverLicense. Cannot save DriverLicense without Person
+            //    .HasRequired(license => license.Person) // Mark Person required in DriverLicense entity
+            //    .WithRequiredDependent(person => person.DriverLicense); // // mark Person property as required in DriverLicense entity. Cannot save DriverLicense without Person and vice-versa
+
+
         }
     }
 }
